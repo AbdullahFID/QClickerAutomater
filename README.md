@@ -1,4 +1,5 @@
-Automates Qlicker session participation for Queen's University students. Never miss attendance smart, reliable, hands-free and open source: https://github.com/AbdullahFID/QClickerAutomater
+Proof-of-concept demonstrating lack of session validation 
+in attendance systems.
 
 ---
 
