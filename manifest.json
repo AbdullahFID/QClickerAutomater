@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Qlicker Automator",
+  "version": "1.0",
+  "description": "Automates Qlicker session participation.",
+  "permissions": [
+    "storage",
+    "scripting",
+    "webNavigation"
+  ],
+  "host_permissions": [
+    "https://qlicker.queensu.ca/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "Logo.png"
+  },
+  "icons": {
+    "16": "Logo.png",
+    "48": "Logo.png",
+    "128": "Logo.png"
+  }
+}

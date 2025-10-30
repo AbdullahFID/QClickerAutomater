@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Qlicker Automator</title>
+    <style>
+        /* ═══════════════════════════════════════════════════════════
+           RESET & BASE STYLES
+        ═══════════════════════════════════════════════════════════ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #24252D 0%, #1a1b23 100%);
+            color: #e4e4e7;
+            width: 320px;
+            min-height: 400px;
+            padding: 24px;
+            overflow: hidden;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           HEADER SECTION
+        ═══════════════════════════════════════════════════════════ */
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        .logo {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 12px;
+            border-radius: 16px;
+            overflow: hidden;
+            filter: drop-shadow(0 4px 12px rgba(99, 102, 241, 0.3));
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        h1 {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a78bfa 0%, #6366f1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            color: #9ca3af;
+            font-weight: 500;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           STATUS CARD
+        ═══════════════════════════════════════════════════════════ */
+        .status-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+            animation: fadeInUp 0.6s ease-out 0.1s both;
+            transition: all 0.3s ease;
+        }
+
+        .status-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(139, 92, 246, 0.3);
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.15);
+        }
+
+        .status-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .status-label {
+            font-size: 13px;
+            color: #9ca3af;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .status-indicator.active {
+            background: #10b981;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+        }
+
+        .status-indicator.inactive {
+            background: #6b7280;
+            animation: none;
+        }
+
+        .status-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: #f3f4f6;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           TOGGLE SWITCH
+        ═══════════════════════════════════════════════════════════ */
+        .toggle-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+
+        .toggle-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .toggle-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: #e4e4e7;
+        }
+
+        /* Custom Toggle Switch */
+        .switch {
+            position: relative;
+            width: 56px;
+            height: 28px;
+            background: #374151;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .switch:hover {
+            border-color: rgba(139, 92, 246, 0.4);
+        }
+
+        .switch.active {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            border-color: transparent;
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .switch.active .slider {
+            transform: translateX(28px);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           DASHBOARD LINK
+        ═══════════════════════════════════════════════════════════ */
+        .dashboard-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            color: #a78bfa;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 14px 20px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out 0.3s both;
+        }
+
+        .dashboard-link:hover {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: rgba(139, 92, 246, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2);
+        }
+
+        .dashboard-link:active {
+            transform: translateY(0);
+        }
+
+        .arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .dashboard-link:hover .arrow {
+            transform: translateX(4px);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           ANIMATIONS
+        ═══════════════════════════════════════════════════════════ */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.6;
+                transform: scale(1.2);
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           FOOTER
+        ═══════════════════════════════════════════════════════════ */
+        .footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 11px;
+            color: #6b7280;
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <div class="header">
+        <div class="logo">
+            <img src="Logo.png" alt="Qlicker Automator Logo">
+        </div>
+        <h1>Qlicker Automator</h1>
+        <p class="subtitle">Smart Attendance Automation</p>
+    </div>
+
+    <!-- Status Display Card -->
+    <div class="status-card">
+        <div class="status-header">
+            <span class="status-label">Current Status</span>
+            <div class="status-indicator" id="status-indicator"></div>
+        </div>
+        <div class="status-text" id="status-text">Loading...</div>
+    </div>
+
+    <!-- Toggle Control -->
+    <div class="toggle-container">
+        <div class="toggle-wrapper">
+            <span class="toggle-label">Automation</span>
+            <div class="switch" id="toggle-switch">
+                <div class="slider"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Link -->
+    <a href="https://qlicker.queensu.ca/student" target="_blank" class="dashboard-link">
+        <span>Open Dashboard</span>
+        <span class="arrow">→</span>
+    </a>
+
+    <!-- Footer -->
+    <div class="footer">
+        Built with 💜 for Queen's Students
+    </div>
+
+    <!-- Link JavaScript -->
+    <script src="popup.js"></script>
+</body>
+</html>
