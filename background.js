@@ -1,15 +1,17 @@
-// background.js (Fixed - Syntax errors corrected)
+// background.js (Fixed - Proper Re-injection)
 
 chrome.runtime.onInstalled.addListener(() => {
     chrome.storage.sync.set({ extensionEnabled: true });
     console.log("Qlicker Automator: Default state set to ENABLED.");
 });
 
-const injectedTabs = new Set();
+// ═══════════════════════════════════════════════════════════
+// Track injected tabs with URLs (not just tab IDs)
+// ═══════════════════════════════════════════════════════════
+const injectedTabUrls = new Map(); // tabId -> last injected URL
 
-// Clear tracking when tab is closed or navigated away
 chrome.tabs.onRemoved.addListener((tabId) => {
-    injectedTabs.delete(tabId);
+    injectedTabUrls.delete(tabId);
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
@@ -18,26 +20,35 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         return;
     }
     
-    if (injectedTabs.has(tabId)) {
-        console.log(`Content script already injected in tab ${tabId}, skipping.`);
+    // ───────────────────────────────────────────────────────
+    // Check if we've already injected into THIS SPECIFIC URL
+    // ───────────────────────────────────────────────────────
+    const lastInjectedUrl = injectedTabUrls.get(tabId);
+    
+    if (lastInjectedUrl === tab.url) {
+        console.log(`Content script already injected for ${tab.url}, skipping.`);
         return;
     }
     
-    console.log(`Qlicker page loaded in tab ${tabId}. Injecting content script.`);
+    console.log(`Qlicker page loaded: ${tab.url}. Injecting content script...`);
     
     chrome.scripting.executeScript({
         target: { tabId: tabId },
         files: ['content.js']
     }).then(() => {
-        injectedTabs.add(tabId);
+        injectedTabUrls.set(tabId, tab.url); // Store URL, not just tab ID
         console.log(`Content script successfully injected in tab ${tabId}.`);
     }).catch((error) => {
         console.error(`Failed to inject content script in tab ${tabId}:`, error);
     });
 });
 
+// ═══════════════════════════════════════════════════════════
+// Clean up on navigation
+// ═══════════════════════════════════════════════════════════
 chrome.webNavigation.onCommitted.addListener((details) => {
-    if (details.frameId === 0) { // Main frame navigation
-        injectedTabs.delete(details.tabId);
+    if (details.frameId === 0) {
+        // Clear the stored URL so we can re-inject on next load
+        injectedTabUrls.delete(details.tabId);
     }
 });
