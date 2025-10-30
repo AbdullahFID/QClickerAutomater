@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <title>Qlicker Automator</title>
     <style>
-        /* ═══════════════════════════════════════════════════════════
-           RESET & BASE STYLES
-        ═══════════════════════════════════════════════════════════ */
         * {
             margin: 0;
             padding: 0;
@@ -18,17 +15,14 @@
             background: linear-gradient(135deg, #24252D 0%, #1a1b23 100%);
             color: #e4e4e7;
             width: 320px;
-            min-height: 400px;
+            min-height: 480px;
             padding: 24px;
             overflow: hidden;
         }
 
-        /* ═══════════════════════════════════════════════════════════
-           HEADER SECTION
-        ═══════════════════════════════════════════════════════════ */
         .header {
             text-align: center;
-            margin-bottom: 32px;
+            margin-bottom: 28px;
             animation: fadeInDown 0.6s ease-out;
         }
 
@@ -70,16 +64,13 @@
             font-weight: 500;
         }
 
-        /* ═══════════════════════════════════════════════════════════
-           STATUS CARD
-        ═══════════════════════════════════════════════════════════ */
         .status-card {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 16px;
             padding: 20px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             animation: fadeInUp 0.6s ease-out 0.1s both;
             transition: all 0.3s ease;
         }
@@ -128,16 +119,13 @@
             color: #f3f4f6;
         }
 
-        /* ═══════════════════════════════════════════════════════════
-           TOGGLE SWITCH
-        ═══════════════════════════════════════════════════════════ */
         .toggle-container {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 16px;
             padding: 20px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             animation: fadeInUp 0.6s ease-out 0.2s both;
         }
 
@@ -153,7 +141,6 @@
             color: #e4e4e7;
         }
 
-        /* Custom Toggle Switch */
         .switch {
             position: relative;
             width: 56px;
@@ -191,9 +178,69 @@
             transform: translateX(28px);
         }
 
-        /* ═══════════════════════════════════════════════════════════
-           DASHBOARD LINK
-        ═══════════════════════════════════════════════════════════ */
+        /* SCHEDULE SECTION */
+        .schedule-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 20px;
+            animation: fadeInUp 0.6s ease-out 0.3s both;
+        }
+
+        .schedule-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #a78bfa;
+        }
+
+        .schedule-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .schedule-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateX(4px);
+        }
+
+        .schedule-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .schedule-icon {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .schedule-content {
+            flex: 1;
+        }
+
+        .schedule-time {
+            font-size: 14px;
+            font-weight: 600;
+            color: #f3f4f6;
+            margin-bottom: 2px;
+        }
+
+        .schedule-desc {
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
         .dashboard-link {
             display: flex;
             align-items: center;
@@ -208,7 +255,7 @@
             border: 1px solid rgba(139, 92, 246, 0.2);
             border-radius: 12px;
             transition: all 0.3s ease;
-            animation: fadeInUp 0.6s ease-out 0.3s both;
+            animation: fadeInUp 0.6s ease-out 0.4s both;
         }
 
         .dashboard-link:hover {
@@ -230,9 +277,14 @@
             transform: translateX(4px);
         }
 
-        /* ═══════════════════════════════════════════════════════════
-           ANIMATIONS
-        ═══════════════════════════════════════════════════════════ */
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 11px;
+            color: #6b7280;
+            animation: fadeInUp 0.6s ease-out 0.5s both;
+        }
+
         @keyframes fadeInDown {
             from {
                 opacity: 0;
@@ -265,21 +317,9 @@
                 transform: scale(1.2);
             }
         }
-
-        /* ═══════════════════════════════════════════════════════════
-           FOOTER
-        ═══════════════════════════════════════════════════════════ */
-        .footer {
-            text-align: center;
-            margin-top: 24px;
-            font-size: 11px;
-            color: #6b7280;
-            animation: fadeInUp 0.6s ease-out 0.4s both;
-        }
     </style>
 </head>
 <body>
-    <!-- Header Section -->
     <div class="header">
         <div class="logo">
             <img src="Logo.png" alt="Qlicker Automator Logo">
@@ -288,7 +328,6 @@
         <p class="subtitle">Smart Attendance Automation</p>
     </div>
 
-    <!-- Status Display Card -->
     <div class="status-card">
         <div class="status-header">
             <span class="status-label">Current Status</span>
@@ -297,7 +336,6 @@
         <div class="status-text" id="status-text">Loading...</div>
     </div>
 
-    <!-- Toggle Control -->
     <div class="toggle-container">
         <div class="toggle-wrapper">
             <span class="toggle-label">Automation</span>
@@ -307,18 +345,36 @@
         </div>
     </div>
 
-    <!-- Dashboard Link -->
+    <div class="schedule-card">
+        <div class="schedule-header">
+            <span>📅</span>
+            <span>Daily Schedule (EST)</span>
+        </div>
+        <div class="schedule-item">
+            <div class="schedule-icon">☀️</div>
+            <div class="schedule-content">
+                <div class="schedule-time">8:00 AM</div>
+                <div class="schedule-desc">Auto-enable & start monitoring</div>
+            </div>
+        </div>
+        <div class="schedule-item">
+            <div class="schedule-icon">💤</div>
+            <div class="schedule-content">
+                <div class="schedule-time">7:30 PM</div>
+                <div class="schedule-desc">Auto-disable & clear state</div>
+            </div>
+        </div>
+    </div>
+
     <a href="https://qlicker.queensu.ca/student" target="_blank" class="dashboard-link">
         <span>Open Dashboard</span>
         <span class="arrow">→</span>
     </a>
 
-    <!-- Footer -->
     <div class="footer">
         Built with 💜 for Queen's Students
     </div>
 
-    <!-- Link JavaScript -->
     <script src="popup.js"></script>
 </body>
 </html>

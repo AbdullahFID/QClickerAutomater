@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const statusIndicator = document.getElementById('status-indicator');
 
     chrome.storage.sync.get('extensionEnabled', ({ extensionEnabled }) => {
-        const isEnabled = extensionEnabled ?? false;
+        const isEnabled = extensionEnabled ?? true;
         updateUI(isEnabled, false); 
     });
 
@@ -35,12 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 statusText.style.transform = 'translateY(-10px)';
                 
                 setTimeout(() => {
-                    statusText.textContent = '🚀 Running';
+                    statusText.textContent = '🚀 Active';
                     statusText.style.opacity = '1';
                     statusText.style.transform = 'translateY(0)';
                 }, 150);
             } else {
-                statusText.textContent = '🚀 Running';
+                statusText.textContent = '🚀 Active';
             }
             
             statusText.style.color = '#10b981';
@@ -55,12 +55,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 statusText.style.transform = 'translateY(-10px)';
                 
                 setTimeout(() => {
-                    statusText.textContent = '⏸️ Disabled';
+                    statusText.textContent = '💤 Sleeping';
                     statusText.style.opacity = '1';
                     statusText.style.transform = 'translateY(0)';
                 }, 150);
             } else {
-                statusText.textContent = '⏸️ Disabled';
+                statusText.textContent = '💤 Sleeping';
             }
             
             statusText.style.color = '#9ca3af';

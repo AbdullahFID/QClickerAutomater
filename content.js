@@ -1,6 +1,6 @@
 (function() {
     'use strict';
-// content.js (Version 21 - Fixed Boot Loop + Priority + Answering Disabled)
+// content.js (Version 21 - FIXED - No Duplicate Functions)
 
 let cachedEnabledState = true;
 let lastStorageCheck = 0;
@@ -53,9 +53,20 @@ async function runAutomation() {
             const { extensionEnabled } = await chrome.storage.sync.get({ extensionEnabled: true });
             cachedEnabledState = extensionEnabled;
             lastStorageCheck = now;
+            
+            // If just disabled (sleep mode), clear local state
+            if (!extensionEnabled) {
+                const wasActive = sessionStorage.getItem('qlickerClassActive');
+                if (wasActive) {
+                    console.log("💤 Extension disabled. Clearing state...");
+                    sessionStorage.clear();
+                }
+            }
         }
         
-        if (!cachedEnabledState) return;
+        if (!cachedEnabledState) {
+            return;
+        }
         
         checkAndAct();
     } catch (error) {
@@ -101,9 +112,6 @@ function checkAndAct() {
         }
     }
 
-    // ───────────────────────────────────────────────────────
-    // CHECK FOR "ANSWERING DISABLED"
-    // ───────────────────────────────────────────────────────
     const answeringDisabled = document.querySelector('.ql-subs-loading');
     if (answeringDisabled && answeringDisabled.textContent.includes('Answering Disabled')) {
         console.log("🚫 ANSWERING DISABLED detected!");
@@ -119,14 +127,11 @@ function checkAndAct() {
             console.log(`📝 Marked "${sessionId}" as disabled/stale`);
         }
         
-        console.log("🔙 Returning to dashboard to try other sessions...");
+        console.log("🔙 Returning to dashboard...");
         window.location.href = dashboardUrl;
         return;
     }
 
-    // ───────────────────────────────────────────────────────
-    // IN-SESSION LOGIC
-    // ───────────────────────────────────────────────────────
     const answerBlock = document.querySelector('.ql-answers');
     
     let submitButton = null;
@@ -153,10 +158,6 @@ function checkAndAct() {
                 console.log("✅ Submitting answer...");
                 submitButton.click();
                 
-                // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-                // BUG FIX 1: Don't update entry time after submit!
-                // Track last active session and time instead
-                // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
                 const currentCourse = document.querySelector('.ql-course-code')?.textContent.trim() || 'unknown';
                 const currentSession = document.querySelector('.ql-session-name')?.textContent.trim() || 'unknown';
                 const sessionId = `${currentCourse}|${currentSession}`;
@@ -166,10 +167,6 @@ function checkAndAct() {
                 console.log(`📌 Marked "${sessionId}" as last active`);
             }
         } else if (buttonText === 'submitted') {
-            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-            // BUG FIX 2: Only mark as stale if we JUST entered
-            // If we've been here a while, we're waiting for next Q
-            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             if (timeSinceEntry < 15000) {
                 console.log(`⚠️ STALE - Submitted ${Math.round(timeSinceEntry/1000)}s after entry!`);
                 
@@ -193,9 +190,6 @@ function checkAndAct() {
         }
     } 
     else {
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // DASHBOARD LOGIC
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         const liveSessions = document.querySelectorAll('.ql-session-status.ql-running');
         
         if (liveSessions.length === 0) {
@@ -221,7 +215,7 @@ function checkAndAct() {
             const sessionId = `${courseName}|${sessionName}`;
             const isStale = submittedList.includes(sessionId);
             const isLastActive = sessionId === lastActiveSession;
-            const recencyBonus = isLastActive && (now - lastActiveTime < 1800000); // 30 min
+            const recencyBonus = isLastActive && (now - lastActiveTime < 1800000);
             
             sessionOptions.push({
                 element: sessionItem,
@@ -241,9 +235,6 @@ function checkAndAct() {
             console.log(`  ${courseName} - ${sessionName} ${status}`);
         }
         
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // BUG FIX 3: Sort by priority (last active > fresh > stale)
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         sessionOptions.sort((a, b) => b.priority - a.priority);
         
         let selectedSession = sessionOptions.find(s => s.priority > 0);
